@@ -5,12 +5,13 @@ This role will create a OpenShift 4 Load balancer for the Qubinode project.
 This load balancer will manage the using pass-through mode the Kubernetes API (tcp/6443), Machine Server Config (tcp/22623) and the OPenShift Routers HTTP and HTTPS (tcp/80, tcp/443).
 
 Reference Load Balancer Configuration  
-Port | Machines  | Internal  | External  | Description  |   |  
+
+Port | Machines  | Internal  | External  | Description  |
 ---|---|---|---|---|---|--  
-6443 | Bootstrap and control plane. You remove the bootstrap machine from the load balancer after the bootstrap machine initializes the cluster control plane. |  :heavy_check_mark:  |   :heavy_check_mark: |  Kubernetes API server |   |  
-22623 |  Bootstrap and control plane. You remove the bootstrap machine from the load balancer after the bootstrap machine initializes the cluster control plane. |   :heavy_check_mark: |   |  Machine Config server |   |  
-443 | The machines that run the Ingress router pods, compute, or worker, by default.  |  :heavy_check_mark:  | :heavy_check_mark:  | HTTPS traffic  |   |  
-80  | The machines that run the Ingress router pods, compute, or worker by default.  | :heavy_check_mark: | :heavy_check_mark:  | HTTP Traffic  |   |  
+6443 | Bootstrap and control plane. You remove the bootstrap machine from the load balancer after the bootstrap machine initializes the cluster control plane. |  :heavy_check_mark:  |   :heavy_check_mark: |  Kubernetes API server |
+22623 |  Bootstrap and control plane. You remove the bootstrap machine from the load balancer after the bootstrap machine initializes the cluster control plane. |   :heavy_check_mark: |   |  Machine Config server |
+443 | The machines that run the Ingress router pods, compute, or worker, by default.  |  :heavy_check_mark:  | :heavy_check_mark:  | HTTPS traffic  |
+80  | The machines that run the Ingress router pods, compute, or worker by default.  | :heavy_check_mark: | :heavy_check_mark:  | HTTP Traffic  |
 
 [NETWORK TOPOLOGY REQUIREMENTS](https://docs.openshift.com/container-platform/4.2/installing/installing_bare_metal/installing-bare-metal.html#installation-network-user-infra_installing-bare-metal)  
 
@@ -54,4 +55,4 @@ Author Information
 ------------------
 
 Tosin Akinosho - [tosin2013](https://github.com/tosin2013)  
-Rodrique Heron - [flyemsafe](https://github.com/flyemsafe) 
+Rodrique Heron - [flyemsafe](https://github.com/flyemsafe)
