@@ -6,12 +6,12 @@ This load balancer will manage the using pass-through mode the Kubernetes API (t
 
 Reference Load Balancer Configuration  
 
-Port | Machines  | Internal  | External  | Description  
---|---|---|---|---|---|--  
-6443 | Bootstrap and control plane. You remove the bootstrap machine from the load balancer after the bootstrap machine initializes the cluster control plane. |  :heavy_check_mark:  |   :heavy_check_mark: |  Kubernetes API server  
-22623 |  Bootstrap and control plane. You remove the bootstrap machine from the load balancer after the bootstrap machine initializes the cluster control plane. |   :heavy_check_mark: |   |  Machine Config server
-443 | The machines that run the Ingress router pods, compute, or worker, by default.  |  :heavy_check_mark:  | :heavy_check_mark:  | HTTPS traffic   
-80  | The machines that run the Ingress router pods, compute, or worker by default.  | :heavy_check_mark: | :heavy_check_mark:  | HTTP Traffic   
+| Port | Machines  | Internal  | External  | Description |  
+|------|-----------|-----------|-----------|-------------|
+| 6443 | Bootstrap and control plane. You remove the bootstrap machine from the load balancer after the bootstrap machine initializes the cluster control plane. |  :heavy_check_mark:  |   :heavy_check_mark: |  Kubernetes API server |  
+| 22623 |  Bootstrap and control plane. You remove the bootstrap machine from the load balancer after the bootstrap machine initializes the cluster control plane. |   :heavy_check_mark: |   |  Machine Config server |
+| 443 | The machines that run the Ingress router pods, compute, or worker, by default.  |  :heavy_check_mark:  | :heavy_check_mark:  | HTTPS traffic |   
+| 80  | The machines that run the Ingress router pods, compute, or worker by default.  | :heavy_check_mark: | :heavy_check_mark:  | HTTP Traffic |  
 
 
 
