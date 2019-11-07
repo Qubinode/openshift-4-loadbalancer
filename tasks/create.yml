@@ -1,4 +1,44 @@
 ---
+- name: show lb_api
+  debug:
+    var: lb_api
+  failed_when: lb_api is not defined
+
+- name: show lb_api_listen
+  debug:
+    var: lb_api_listen
+  failed_when: lb_api_listen is not defined
+
+- name: show lb_ingress_http_listen
+  debug:
+    var: lb_ingress_http_listen
+  failed_when: lb_ingress_http_listen is not defined
+
+- name: show lb_ingress_http
+  debug:
+    var: lb_ingress_http
+  failed_when: lb_ingress_http is not defined
+
+- name: show lb_ingress_https
+  debug:
+    var: lb_ingress_https
+  failed_when: lb_ingress_https is not defined
+
+- name: show lb_ingress_https_listen
+  debug:
+    var:  lb_ingress_https_listen
+  failed_when: lb_ingress_https_listen is not defined
+
+- name: show lb_machine_config_server
+  debug:
+    var: lb_machine_config_server
+  failed_when: lb_machine_config_server is not defined
+
+- name: show lb_machine_config_server_listen
+  debug:
+    var: lb_machine_config_server_listen
+  failed_when: lb_machine_config_server_listen is not defined
+
 - name: Install OpenShift 4 Loadbalancer SystemD service
   template:
     src: systemd.service.j2

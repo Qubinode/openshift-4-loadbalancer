@@ -27,7 +27,16 @@ Requirements
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+listen_address:
+lb_name: "openshift-4-loadbalancer-{{ cluster_name }}"
+lb_api: "{{ tmp_api | join(',') }}"
+lb_api_listen: "{{ tmp_api_listen | join(',') }}"
+lb_ingress_http: "{{ tmp_ingress_http | join(',') }}"
+lb_ingress_http_listen: "{{ tmp_ingress_http_listen | join(',') }}"
+lb_ingress_https: "{{ tmp_ingress_https | join(',') }}"
+lb_ingress_https_listen: "{{ tmp_ingress_https_listen | join(',') }}"
+lb_machine_config_server: "{{ tmp_machine_config_server | join(',') }}"
+lb_machine_config_server_listen: "{{ tmp_machine_config_server_listen | join(',') }}"
 
 Dependencies
 ------------
