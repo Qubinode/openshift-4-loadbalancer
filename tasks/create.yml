@@ -48,17 +48,37 @@
   systemd:
     name: "{{ lb_name }}.service"
     enabled: yes
-    state: started
-
-- name: Enable and start {{ lb_name }}.service
-  systemd:
-    name: "{{ lb_name }}.service"
-    enabled: yes
+    daemon_reload: yes
     state: started
 
 - name: Collect services facts
   service_facts:
   register: services_state
+
+- name: check for issue https://github.com/containers/libpod/issues/2553
+  block:
+    - name: check logs for reported issue
+      shell: >
+        journalctl -n10 -u {{ lb_name }} |awk -F'by' '{print $2}'|awk -F'.' '{print $1}'|awk '{print $1}'|grep -v -e '^$'
+      register: found_issue
+      ignore_errors: yes
+    
+    - name: remove existing {{ lb_name }} container storage
+      shell: podman rm --force --storage "{{ found_issue.stdout }}"
+      register: remove_issue
+      ignore_errors: yes
+    
+    - name: restart {{ lb_name }}.service
+      systemd:
+        name: "{{ lb_name }}.service"
+        enabled: yes
+        daemon_reload: yes
+        state: restarted
+
+    - name: Collect services facts
+      service_facts:
+      register: services_state
+  when: services_state.ansible_facts and services_state.ansible_facts.services[ lb_name  + '.service'].state != 'running'
 
 - name: Check {{ lb_name }}.service
   fail:

@@ -16,6 +16,11 @@
   register: running_containers
   become: yes
 
+- name: get uuid for {{ lb_name }} container
+  shell: podman ps -a | awk '/{{ lb_name }}/ {print $1}'
+  register: container_uuid
+  ignore_errors: yes
+
 - name: stop running containers
   shell: "podman stop {{ item }}"
   become: yes
@@ -28,5 +33,7 @@
   with_items: "{{ running_containers.stdout_lines }}"
   become: yes
 
-- debug:
-    msg: "Podman will stay in the Host, Play with it! ;-)"
+- name: ensure {{ podman_webserver }} container is removed
+  shell: "podman rm -f {{ container_uuid.stdout }}"
+  ignore_errors: yes
+  become: yes
