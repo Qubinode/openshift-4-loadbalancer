@@ -27,13 +27,15 @@
   with_items: "{{ running_containers.stdout_lines }}"
   when: running_containers.stdout != ""
 
-- name: delete {{ podman_webserver }} container
-  shell: "podman rm {{ item }}"
+- name: delete {{ lb_name }} container
+  #shell: "podman rm {{ item }}"
+  command: podman container rm --force --storage {{ item }}
   when: running_containers.stdout != ""
   with_items: "{{ running_containers.stdout_lines }}"
   become: yes
 
-- name: ensure {{ podman_webserver }} container is removed
-  shell: "podman rm -f {{ container_uuid.stdout }}"
-  ignore_errors: yes
+- name: ensure {{ lb_name }} container is removed
+  shell: "podman rm -f --storage {{ container_uuid.stdout }}"
+  ignore_errors: no
   become: yes
+  when: container_uuid is defined and container_uuid.stdout != ''
