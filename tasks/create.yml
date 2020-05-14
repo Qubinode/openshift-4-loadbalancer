@@ -83,4 +83,4 @@
 - name: Check {{ lb_name }}.service
   fail:
     msg: "Load balancer service {{ lb_name }}.service is not running!!! Please check, run: systemctl status {{ lb_name }}.service"
-  when: services_state.ansible_facts.services[ lb_name  + '.service'].state != 'running'
+  when: services_state.ansible_facts is defined and services_state.ansible_facts.services[ lb_name  + '.service'].state != 'running'
