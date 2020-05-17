@@ -1,41 +1,53 @@
 ---
+- name: check status of container
+  include: check_status.yml
+
 - name: Stop and disable {{ lb_name }}.service
   systemd:
     name: "{{ lb_name }}.service"
     enabled: false
     state: stopped
   ignore_errors: true
+  when: container_running|bool
 
-- name: Remove OpenShift 4 Loadbalancer SystemD service
-  file:
-    path: "/etc/systemd/system/{{ lb_name }}.service"
-    state: absent
+- name: check status of container
+  include: check_status.yml
 
-- name: checking if podman containers is running
-  shell: "podman container list -a --format {% raw %} 'table {{.Names}} {{.ID}}' {% endraw %}|awk '/openshift-4-loadbalancer/ {print $2}'"
-  register: running_containers
-  become: yes
+- name: remove systemd service for {{ lb_name }}a
+  block:
+    - name: check for the {{ lb_name }}.service file
+      stat:
+        path: "{{ lb_name }}"
+      register: systemd_file
+
+    - name: remove the {{ lb_name }}.service file
+      file:
+        path: "/etc/systemd/system/{{ lb_name }}.service"
+        state: absent
+      register: remove_service
+
+    - name: reload and reset systemd
+      shell: >
+        systemctl daemon-reload
+        systemctl reset-failed
+      ignore_errors: yes
+      when: remove_service.changed
+  when: not container_running|bool
 
 - name: get uuid for {{ lb_name }} container
   shell: podman ps -a | awk '/{{ lb_name }}/ {print $1}'
   register: container_uuid
   ignore_errors: yes
 
-- name: stop running containers
-  shell: "podman stop {{ item }}"
-  become: yes
-  with_items: "{{ running_containers.stdout_lines }}"
-  when: running_containers.stdout != ""
+- name: ensure the {{ lb_name }} container is removed
+  command: podman container rm --force --volumes {{ container_uuid.stdout }}
+  ignore_errors: yes
+  register: remove_container_result
+  when: container_exist|bool
 
-- name: delete {{ lb_name }} container
-  #shell: "podman rm {{ item }}"
-  command: podman container rm --force --storage {{ item }}
-  when: running_containers.stdout != ""
-  with_items: "{{ running_containers.stdout_lines }}"
-  become: yes
+- name: check status of container
+  include: check_status.yml
 
-- name: ensure {{ lb_name }} container is removed
-  shell: "podman rm -f --storage {{ container_uuid.stdout }}"
-  ignore_errors: no
-  become: yes
-  when: container_uuid is defined and container_uuid.stdout != ''
+- fail:
+    msg: "Unable to delete {{ lb_name }} please remove it before re-running"
+  when: container_exist|bool
