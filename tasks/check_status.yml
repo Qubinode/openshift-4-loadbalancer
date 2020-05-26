@@ -1,0 +1,12 @@
+---
+- name: get {{ lb_name }} container info
+  shell: podman inspect -f {%raw%}"{{.State.Status}}"{%endraw%} {{ lb_name }}
+  register: container_result
+  failed_when: false
+  changed_when: false
+
+- name: set {{ lb_name }} container state
+  set_fact:
+    container_exited: "{{ true if container_result.stdout is defined and container_result.stdout == 'exited' else false }}"
+    container_running: "{{ true if container_result.stdout is defined and container_result.stdout == 'running' else false }}"
+    container_exist: "{{ true if container_result.stdout is defined and container_result.stdout != '' else false }}"
