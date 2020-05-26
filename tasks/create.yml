@@ -44,6 +44,12 @@
     src: systemd.service.j2
     dest: "/etc/systemd/system/{{ lb_name }}.service"
 
+- name: reload and reset systemd for {{ lb_name }}.service
+  shell: >
+    systemctl daemon-reload
+    systemctl reset-failed
+  ignore_errors: yes
+
 - name: Enable and start {{ lb_name }}.service
   systemd:
     name: "{{ lb_name }}.service"
@@ -62,12 +68,12 @@
         journalctl -n10 -u {{ lb_name }} |awk -F'by' '{print $2}'|awk -F'.' '{print $1}'|awk '{print $1}'|grep -v -e '^$'
       register: found_issue
       ignore_errors: yes
-    
+
     - name: remove existing {{ lb_name }} container storage
       shell: podman rm --force --storage "{{ found_issue.stdout }}"
       register: remove_issue
       ignore_errors: yes
-    
+
     - name: restart {{ lb_name }}.service
       systemd:
         name: "{{ lb_name }}.service"
